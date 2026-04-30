@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📸 Gallery — Bachelorette</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/gallery.css" />
+</head>
+<body>
+  <div class="deco-dots"></div>
+  <div class="page-wrapper">
+
+    <a href="index.html" class="back-btn">Back to Menu</a>
+
+    <header class="page-header fade-in">
+      <span class="emoji">📸</span>
+      <h1>Shared Gallery</h1>
+      <p>Upload your best shots from the day!</p>
+    </header>
+
+    <!-- Upload Card -->
+    <div class="card upload-card fade-in" style="animation-delay:0.1s">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" accept="image/*" id="fileInput" class="file-input" multiple />
+        <label for="fileInput" class="upload-label">
+          <div class="upload-icon">📷</div>
+          <p class="upload-text">Tap to add photos</p>
+          <p class="upload-sub">JPG, PNG, HEIC · Max 10MB each</p>
+        </label>
+      </div>
+      <div class="upload-preview" id="uploadPreview" style="display:none;">
+        <img id="previewImg" src="" alt="Preview" class="preview-img" />
+        <div class="preview-actions">
+          <button class="btn btn-primary" id="uploadBtn">Upload Photo 🚀</button>
+          <button class="btn btn-outline" id="cancelBtn" style="margin-top:8px;">Cancel</button>
+        </div>
+      </div>
+      <!-- Progress -->
+      <div class="upload-progress" id="progressWrap" style="display:none;">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="progress-text" id="progressText">Uploading... 0%</p>
+      </div>
+      <div class="alert alert-success" id="successAlert">✅ Photo uploaded! It will appear below shortly.</div>
+      <div class="alert alert-error"   id="errorAlert">❌ Upload failed. Please try again.</div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-header fade-in" style="animation-delay:0.15s">
+      <h2>Our Memories</h2>
+      <span class="photo-count" id="photoCount">Loading...</span>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading photos...</p>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">✕</button>
+      <img class="lightbox-img" id="lightboxImg" src="" alt="Full size photo" />
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { db, storage } from './js/firebase-config.js';
+    import {
+      collection,
+      addDoc,
+      onSnapshot,
+      orderBy,
+      query,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      ref,
+      uploadBytesResumable,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    // ── DOM refs ──
+    const fileInput    = document.getElementById('fileInput');
+    const uploadZone   = document.getElementById('uploadZone');
+    const previewSection = document.getElementById('uploadPreview');
+    const previewImg   = document.getElementById('previewImg');
+    const uploadBtn    = document.getElementById('uploadBtn');
+    const cancelBtn    = document.getElementById('cancelBtn');
+    const progressWrap = document.getElementById('progressWrap');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const successAlert = document.getElementById('successAlert');
+    const errorAlert   = document.getElementById('errorAlert');
+    const galleryGrid  = document.getElementById('galleryGrid');
+    const photoCount   = document.getElementById('photoCount');
+    const lightbox     = document.getElementById('lightbox');
+    const lightboxImg  = document.getElementById('lightboxImg');
+    const lightboxClose= document.getElementById('lightboxClose');
+
+    let selectedFile = null;
+
+    // ── File selection ──
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File is too large. Max 10MB.');
+        return;
+      }
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        previewImg.src = ev.target.result;
+        uploadZone.style.display = 'none';
+        previewSection.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    cancelBtn.addEventListener('click', resetUpload);
+
+    function resetUpload() {
+      selectedFile = null;
+      fileInput.value = '';
+      previewSection.style.display = 'none';
+      progressWrap.style.display = 'none';
+      uploadZone.style.display = 'block';
+      successAlert.classList.remove('show');
+      errorAlert.classList.remove('show');
+    }
+
+    // ── Upload to Firebase Storage ──
+    uploadBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      const fileName = `${Date.now()}_${selectedFile.name}`;
+      const storageRef = ref(storage, `gallery_images/${fileName}`);
+      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+
+      uploadBtn.disabled = true;
+      previewSection.style.display = 'none';
+      progressWrap.style.display = 'block';
+      successAlert.classList.remove('show');
+      errorAlert.classList.remove('show');
+
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          progressFill.style.width = pct + '%';
+          progressText.textContent = `Uploading... ${pct}%`;
+        },
+        (err) => {
+          console.error(err);
+          progressWrap.style.display = 'none';
+          uploadZone.style.display = 'block';
+          errorAlert.classList.add('show');
+          uploadBtn.disabled = false;
+        },
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            await addDoc(collection(db, 'gallery_images'), {
+              url,
+              fileName,
+              uploadedAt: serverTimestamp()
+            });
+            progressWrap.style.display = 'none';
+            uploadZone.style.display = 'block';
+            successAlert.classList.add('show');
+            uploadBtn.disabled = false;
+            resetUpload();
+          } catch (err) {
+            console.error(err);
+            errorAlert.classList.add('show');
+            uploadBtn.disabled = false;
+          }
+        }
+      );
+    });
+
+    // ── Real-time gallery listener ──
+    const q = query(collection(db, 'gallery_images'), orderBy('uploadedAt', 'desc'));
+
+    onSnapshot(q, (snapshot) => {
+      const count = snapshot.size;
+      photoCount.textContent = `${count} photo${count !== 1 ? 's' : ''}`;
+
+      if (count === 0) {
+        galleryGrid.innerHTML = `
+          <div class="gallery-empty">
+            <p>📭 No photos yet — be the first to upload!</p>
+          </div>`;
+        return;
+      }
+
+      galleryGrid.innerHTML = '';
+      snapshot.forEach((doc) => {
+        const { url } = doc.data();
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Party photo';
+        img.className = 'gallery-img';
+        img.loading = 'lazy';
+        img.addEventListener('click', () => openLightbox(url));
+        galleryGrid.appendChild(img);
+      });
+    }, (err) => {
+      console.error(err);
+      galleryGrid.innerHTML = `<div class="gallery-empty"><p>❌ Failed to load photos.</p></div>`;
+    });
+
+    // ── Lightbox ──
+    function openLightbox(url) {
+      lightboxImg.src = url;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      lightboxImg.src = '';
+    }
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  </script>
+</body>
+</html>

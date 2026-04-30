@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 Bride Quiz — Bachelorette</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/quiz.css" />
+</head>
+<body>
+  <div class="deco-dots"></div>
+  <div class="page-wrapper">
+    <a href="index.html" class="back-btn">Back to Menu</a>
+
+    <!-- ── Intro Screen ── -->
+    <div id="introScreen">
+      <header class="page-header fade-in">
+        <span class="emoji">🧠</span>
+        <h1>How Well Do You Know the Bride?</h1>
+        <p>10 questions about Sofia. No cheating! 👀</p>
+      </header>
+      <div class="card intro-card fade-in" style="animation-delay:0.1s">
+        <div class="intro-rules">
+          <div class="rule"><span>📋</span><p>10 multiple-choice questions</p></div>
+          <div class="rule"><span>⏱️</span><p>Answer at your own pace</p></div>
+          <div class="rule"><span>🏆</span><p>See your score at the end</p></div>
+        </div>
+      </div>
+      <button class="btn btn-primary fade-in" id="startBtn" style="animation-delay:0.2s;margin:0 20px;width:calc(100% - 40px);">
+        Start Quiz 🎉
+      </button>
+    </div>
+
+    <!-- ── Quiz Screen ── -->
+    <div id="quizScreen" style="display:none;">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="progressFill"></div>
+      </div>
+      <div class="quiz-meta">
+        <span id="questionCounter">Question 1 of 10</span>
+        <span id="scoreDisplay">Score: 0</span>
+      </div>
+      <div class="card question-card fade-in">
+        <p class="question-number" id="questionNumber">Q1</p>
+        <h2 class="question-text" id="questionText"></h2>
+      </div>
+      <div class="options-list" id="optionsList"></div>
+      <button class="btn btn-primary" id="nextBtn" style="margin-top:4px;display:none;">
+        Next Question →
+      </button>
+    </div>
+
+    <!-- ── Result Screen ── -->
+    <div id="resultScreen" style="display:none;">
+      <header class="page-header">
+        <span class="emoji" id="resultEmoji">🎊</span>
+        <h1 id="resultTitle">Amazing!</h1>
+        <p id="resultSubtitle">You really know Sofia!</p>
+      </header>
+      <div class="card score-card">
+        <div class="score-circle">
+          <span class="score-num" id="finalScore">0</span>
+          <span class="score-total" id="totalQuestions">/10</span>
+        </div>
+        <p class="score-label" id="scoreLabel">Perfect score!</p>
+      </div>
+      <div class="card answers-review" id="answersReview">
+        <h3>Review Your Answers</h3>
+        <div id="reviewList"></div>
+      </div>
+      <button class="btn btn-outline" id="retryBtn" style="margin-top:4px;">
+        Try Again 🔄
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    //  ✏️ EDIT: Customize questions and answers about your bride!
+    //  correct: index (0-based) of the correct answer in options[]
+    // ============================================================
+    const questions = [
+      {
+        text: "What is Sofia's hometown?",
+        options: ["Tel Aviv", "Jerusalem", "Haifa", "Beersheba"],
+        correct: 0,
+        explanation: "Sofia grew up in Tel Aviv! ☀️"
+      },
+      {
+        text: "What did Sofia study at university?",
+        options: ["Law", "Computer Science", "Architecture", "Psychology"],
+        correct: 2,
+        explanation: "Architecture was her passion from day one! 🏛️"
+      },
+      {
+        text: "What is Sofia's favourite travel destination?",
+        options: ["Japan", "Italy", "Greece", "Thailand"],
+        correct: 1,
+        explanation: "Italy stole her heart — especially the pasta! 🍝"
+      },
+      {
+        text: "How did Sofia meet her fiancé?",
+        options: ["At work", "Through friends", "Dating app", "At the gym"],
+        correct: 1,
+        explanation: "A mutual friend set them up — and the rest is history! 💘"
+      },
+      {
+        text: "What is Sofia's go-to karaoke song?",
+        options: ["Total Eclipse of the Heart", "Dancing Queen", "Don't Stop Believin'", "Shallow"],
+        correct: 3,
+        explanation: "She never fails to bring the house down with Shallow! 🎤"
+      },
+      {
+        text: "What is Sofia's favourite season?",
+        options: ["Spring", "Summer", "Autumn", "Winter"],
+        correct: 1,
+        explanation: "Beach girl through and through — she lives for summer! 🌊"
+      },
+      {
+        text: "What is Sofia's secret talent?",
+        options: ["Juggling", "Painting watercolors", "Playing the ukulele", "Speed-reading"],
+        correct: 2,
+        explanation: "Yes, she secretly plays the ukulele — and she's actually good! 🎶"
+      },
+      {
+        text: "What is the first thing Sofia does every morning?",
+        options: ["Hit snooze 3 times", "Make coffee", "Check Instagram", "Go for a run"],
+        correct: 0,
+        explanation: "She's famously NOT a morning person 😂 Snooze x3, minimum."
+      },
+      {
+        text: "What food could Sofia eat every single day?",
+        options: ["Sushi", "Pizza", "Hummus", "Pasta"],
+        correct: 2,
+        explanation: "Hummus. Always hummus. It's practically her love language. 🤤"
+      },
+      {
+        text: "Where is the honeymoon planned?",
+        options: ["Maldives", "Bali", "Santorini", "Paris"],
+        correct: 0,
+        explanation: "Maldives here they come! Overwater bungalow vibes! 🏝️"
+      }
+    ];
+
+    // ── State ──
+    let currentQ = 0;
+    let score    = 0;
+    let answered = false;
+    let userAnswers = [];
+
+    // ── DOM refs ──
+    const introScreen  = document.getElementById('introScreen');
+    const quizScreen   = document.getElementById('quizScreen');
+    const resultScreen = document.getElementById('resultScreen');
+    const progressFill = document.getElementById('progressFill');
+    const qCounter     = document.getElementById('questionCounter');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const qNumber      = document.getElementById('questionNumber');
+    const qText        = document.getElementById('questionText');
+    const optionsList  = document.getElementById('optionsList');
+    const nextBtn      = document.getElementById('nextBtn');
+
+    // ── Start ──
+    document.getElementById('startBtn').addEventListener('click', () => {
+      introScreen.style.display = 'none';
+      quizScreen.style.display  = 'block';
+      renderQuestion();
+    });
+
+    function renderQuestion() {
+      answered = false;
+      nextBtn.style.display = 'none';
+      optionsList.innerHTML  = '';
+
+      const q = questions[currentQ];
+      const pct = ((currentQ) / questions.length) * 100;
+      progressFill.style.width = pct + '%';
+      qCounter.textContent  = `Question ${currentQ + 1} of ${questions.length}`;
+      scoreDisplay.textContent = `Score: ${score}`;
+      qNumber.textContent   = `Q${currentQ + 1}`;
+      qText.textContent     = q.text;
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className   = 'option-btn';
+        btn.innerHTML   = `<span class="option-letter">${String.fromCharCode(65+i)}</span><span>${opt}</span>`;
+        btn.addEventListener('click', () => selectAnswer(i, btn));
+        optionsList.appendChild(btn);
+      });
+
+      // Animate in
+      document.querySelector('.question-card').classList.remove('fade-in');
+      void document.querySelector('.question-card').offsetWidth;
+      document.querySelector('.question-card').classList.add('fade-in');
+    }
+
+    function selectAnswer(index, el) {
+      if (answered) return;
+      answered = true;
+
+      const q    = questions[currentQ];
+      const isCorrect = index === q.correct;
+      if (isCorrect) score++;
+
+      userAnswers.push({ question: q.text, chosen: q.options[index], correct: q.options[q.correct], isCorrect });
+
+      // Reveal options
+      const allBtns = optionsList.querySelectorAll('.option-btn');
+      allBtns.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.correct) btn.classList.add('correct');
+        else if (i === index && !isCorrect) btn.classList.add('wrong');
+      });
+
+      // Show explanation
+      const exp = document.createElement('div');
+      exp.className = 'explanation ' + (isCorrect ? 'exp-correct' : 'exp-wrong');
+      exp.textContent = (isCorrect ? '✅ ' : '❌ ') + q.explanation;
+      optionsList.appendChild(exp);
+
+      scoreDisplay.textContent = `Score: ${score}`;
+      nextBtn.style.display = 'flex';
+      nextBtn.textContent = currentQ < questions.length - 1 ? 'Next Question →' : 'See Results 🎊';
+    }
+
+    nextBtn.addEventListener('click', () => {
+      currentQ++;
+      if (currentQ < questions.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      quizScreen.style.display  = 'none';
+      resultScreen.style.display = 'block';
+      progressFill.style.width = '100%';
+
+      const pct = score / questions.length;
+      let emoji, title, subtitle;
+      if (pct === 1)       { emoji = '👑'; title = 'PERFECT!';    subtitle = "You're basically Sofia's twin! 👯‍♀️"; }
+      else if (pct >= 0.8) { emoji = '🏆'; title = 'Amazing!';    subtitle = "You really know our bride-to-be! 💗"; }
+      else if (pct >= 0.6) { emoji = '🥳'; title = 'Great job!';  subtitle = "Solid! You know her pretty well. 💪"; }
+      else if (pct >= 0.4) { emoji = '😅'; title = 'Not bad!';    subtitle = "Room to grow! More brunch dates needed. ☕"; }
+      else                  { emoji = '😂'; title = 'Oops!';       subtitle = "Do you actually know Sofia? 😂 (Still love you!)"; }
+
+      document.getElementById('resultEmoji').textContent      = emoji;
+      document.getElementById('resultTitle').textContent      = title;
+      document.getElementById('resultSubtitle').textContent   = subtitle;
+      document.getElementById('finalScore').textContent       = score;
+      document.getElementById('totalQuestions').textContent   = `/${questions.length}`;
+      document.getElementById('scoreLabel').textContent       = `${Math.round(pct * 100)}% correct`;
+
+      // Review
+      const reviewList = document.getElementById('reviewList');
+      userAnswers.forEach((a, i) => {
+        const div = document.createElement('div');
+        div.className = 'review-item ' + (a.isCorrect ? 'review-correct' : 'review-wrong');
+        div.innerHTML = `
+          <p class="review-q"><strong>Q${i+1}:</strong> ${a.question}</p>
+          <p class="review-chosen">${a.isCorrect ? '✅' : '❌'} You: ${a.chosen}</p>
+          ${!a.isCorrect ? `<p class="review-answer">✔ Correct: ${a.correct}</p>` : ''}
+        `;
+        reviewList.appendChild(div);
+      });
+    }
+
+    document.getElementById('retryBtn').addEventListener('click', () => {
+      currentQ    = 0;
+      score       = 0;
+      answered    = false;
+      userAnswers = [];
+      progressFill.style.width = '0%';
+      document.getElementById('reviewList').innerHTML = '';
+      resultScreen.style.display = 'none';
+      quizScreen.style.display   = 'block';
+      renderQuestion();
+    });
+  </script>
+</body>
+</html>

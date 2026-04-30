@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💌 RSVP — Bachelorette</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/rsvp.css" />
+</head>
+<body>
+  <div class="deco-dots"></div>
+  <div class="page-wrapper">
+
+    <a href="index.html" class="back-btn">Back to Menu</a>
+
+    <header class="page-header fade-in">
+      <span class="emoji">💌</span>
+      <h1>RSVP</h1>
+      <p>Let us know if you're joining the fun!</p>
+    </header>
+
+    <div class="card fade-in" style="animation-delay:0.1s">
+      <form id="rsvpForm" novalidate>
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            placeholder="e.g. Maya Cohen"
+            required
+            autocomplete="name"
+          />
+        </div>
+
+        <!-- Attending -->
+        <div class="form-group">
+          <label>Are you attending? *</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="attending" id="attendYes" value="yes" required />
+              <label for="attendYes">🥂 Yes, I'll be there!</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="attending" id="attendNo" value="no" />
+              <label for="attendNo">😢 Sorry, I can't make it</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dietary -->
+        <div class="form-group" id="dietarySection">
+          <label for="dietary">Food Allergies / Dietary Preferences</label>
+          <textarea
+            id="dietary"
+            name="dietary"
+            placeholder="e.g. Vegetarian, gluten-free, nut allergy..."
+          ></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <span id="btnText">Send RSVP 💗</span>
+          <span id="btnSpinner" class="spinner" style="display:none;"></span>
+        </button>
+
+      </form>
+
+      <div class="alert alert-success" id="successAlert">
+        🎉 Thanks! Your RSVP has been received. Can't wait to celebrate with you!
+      </div>
+      <div class="alert alert-error" id="errorAlert">
+        ❌ Oops! Something went wrong. Please try again or contact the organizer.
+      </div>
+    </div>
+
+    <!-- Already submitted? -->
+    <p class="rsvp-footnote fade-in" style="animation-delay:0.25s">
+      Already submitted? Reach out to the organizer to make any changes. 💬
+    </p>
+
+  </div>
+
+  <!-- Firebase SDK (ES Module) -->
+  <script type="module">
+    import { db } from './js/firebase-config.js';
+    import {
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const form        = document.getElementById('rsvpForm');
+    const submitBtn   = document.getElementById('submitBtn');
+    const btnText     = document.getElementById('btnText');
+    const btnSpinner  = document.getElementById('btnSpinner');
+    const successAlert = document.getElementById('successAlert');
+    const errorAlert   = document.getElementById('errorAlert');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const attending = form.querySelector('input[name="attending"]:checked');
+      const dietary  = document.getElementById('dietary').value.trim();
+
+      // Validation
+      if (!fullName) {
+        alert('Please enter your full name.');
+        return;
+      }
+      if (!attending) {
+        alert('Please select whether you are attending.');
+        return;
+      }
+
+      // Loading state
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      successAlert.classList.remove('show');
+      errorAlert.classList.remove('show');
+
+      try {
+        await addDoc(collection(db, 'rsvp_list'), {
+          fullName,
+          attending: attending.value,
+          dietary: dietary || null,
+          submittedAt: serverTimestamp()
+        });
+
+        successAlert.classList.add('show');
+        form.reset();
+      } catch (err) {
+        console.error('RSVP Error:', err);
+        errorAlert.classList.add('show');
+      } finally {
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
