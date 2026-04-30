@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📸 Gallery — Bachelorette</title>
+  <title>📸 גלריה — מסיבת רווקות</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/gallery.css" />
 </head>
@@ -11,12 +11,12 @@
   <div class="deco-dots"></div>
   <div class="page-wrapper">
 
-    <a href="index.html" class="back-btn">Back to Menu</a>
+    <a href="index.html" class="back-btn">חזרה לתפריט</a>
 
     <header class="page-header fade-in">
       <span class="emoji">📸</span>
-      <h1>Shared Gallery</h1>
-      <p>Upload your best shots from the day!</p>
+      <h1>תמונות מהמסיבה</h1>
+      <p>העלו את התמונות הכי טובות מהיום!</p>
     </header>
 
     <!-- Upload Card -->
@@ -25,15 +25,15 @@
         <input type="file" accept="image/*" id="fileInput" class="file-input" multiple />
         <label for="fileInput" class="upload-label">
           <div class="upload-icon">📷</div>
-          <p class="upload-text">Tap to add photos</p>
-          <p class="upload-sub">JPG, PNG, HEIC · Max 10MB each</p>
+          <p class="upload-text">לחצי להוספת תמונות</p>
+          <p class="upload-sub">JPG, PNG, HEIC · עד 10MB לתמונה</p>
         </label>
       </div>
       <div class="upload-preview" id="uploadPreview" style="display:none;">
-        <img id="previewImg" src="" alt="Preview" class="preview-img" />
+        <img id="previewImg" src="" alt="תצוגה מקדימה" class="preview-img" />
         <div class="preview-actions">
-          <button class="btn btn-primary" id="uploadBtn">Upload Photo 🚀</button>
-          <button class="btn btn-outline" id="cancelBtn" style="margin-top:8px;">Cancel</button>
+          <button class="btn btn-primary" id="uploadBtn">העלאת תמונה 🚀</button>
+          <button class="btn btn-outline" id="cancelBtn" style="margin-top:8px;">ביטול</button>
         </div>
       </div>
       <!-- Progress -->
@@ -41,29 +41,29 @@
         <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
-        <p class="progress-text" id="progressText">Uploading... 0%</p>
+        <p class="progress-text" id="progressText">מעלה... 0%</p>
       </div>
-      <div class="alert alert-success" id="successAlert">✅ Photo uploaded! It will appear below shortly.</div>
-      <div class="alert alert-error"   id="errorAlert">❌ Upload failed. Please try again.</div>
+      <div class="alert alert-success" id="successAlert">✅ התמונה הועלתה! היא תופיע למטה בקרוב.</div>
+      <div class="alert alert-error"   id="errorAlert">❌ ההעלאה נכשלה. נסי שוב.</div>
     </div>
 
     <!-- Gallery Grid -->
     <div class="gallery-header fade-in" style="animation-delay:0.15s">
-      <h2>Our Memories</h2>
-      <span class="photo-count" id="photoCount">Loading...</span>
+      <h2>הזיכרונות שלנו</h2>
+      <span class="photo-count" id="photoCount">טוען...</span>
     </div>
 
     <div class="gallery-grid" id="galleryGrid">
       <div class="gallery-loading">
         <div class="loading-spinner"></div>
-        <p>Loading photos...</p>
+        <p>טוען תמונות...</p>
       </div>
     </div>
 
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
       <button class="lightbox-close" id="lightboxClose">✕</button>
-      <img class="lightbox-img" id="lightboxImg" src="" alt="Full size photo" />
+      <img class="lightbox-img" id="lightboxImg" src="" alt="תמונה מלאה" />
     </div>
 
   </div>
@@ -109,7 +109,7 @@
       const file = e.target.files[0];
       if (!file) return;
       if (file.size > 10 * 1024 * 1024) {
-        alert('File is too large. Max 10MB.');
+        alert('הקובץ גדול מדי. מקסימום 10MB.');
         return;
       }
       selectedFile = file;
@@ -152,7 +152,7 @@
         (snapshot) => {
           const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
           progressFill.style.width = pct + '%';
-          progressText.textContent = `Uploading... ${pct}%`;
+          progressText.textContent = `מעלה... ${pct}%`;
         },
         (err) => {
           console.error(err);
@@ -188,12 +188,12 @@
 
     onSnapshot(q, (snapshot) => {
       const count = snapshot.size;
-      photoCount.textContent = `${count} photo${count !== 1 ? 's' : ''}`;
+      photoCount.textContent = `${count} תמונות`;
 
       if (count === 0) {
         galleryGrid.innerHTML = `
           <div class="gallery-empty">
-            <p>📭 No photos yet — be the first to upload!</p>
+            <p>📭 עדיין אין תמונות — היי הראשונה להעלות!</p>
           </div>`;
         return;
       }
@@ -203,7 +203,7 @@
         const { url } = doc.data();
         const img = document.createElement('img');
         img.src = url;
-        img.alt = 'Party photo';
+        img.alt = 'תמונה מהמסיבה';
         img.className = 'gallery-img';
         img.loading = 'lazy';
         img.addEventListener('click', () => openLightbox(url));
@@ -211,7 +211,7 @@
       });
     }, (err) => {
       console.error(err);
-      galleryGrid.innerHTML = `<div class="gallery-empty"><p>❌ Failed to load photos.</p></div>`;
+      galleryGrid.innerHTML = `<div class="gallery-empty"><p>❌ טעינת התמונות נכשלה.</p></div>`;
     });
 
     // ── Lightbox ──

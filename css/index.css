@@ -89,8 +89,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   padding: 22px 18px 18px;
+  text-align: right;
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: var(--deep);
@@ -165,11 +166,11 @@
 .grid-arrow {
   position: absolute;
   bottom: 14px;
-  right: 16px;
+  left: 16px;
   font-size: 0.9rem;
   color: var(--rose);
   opacity: 0;
-  transform: translateX(-4px);
+  transform: translateX(4px);
   transition: var(--transition);
 }
 .grid-item:hover .grid-arrow {

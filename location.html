@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📍 Location — Bachelorette</title>
+  <title>📍 איך מגיעים? — מסיבת רווקות</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/location.css" />
 </head>
@@ -11,12 +11,12 @@
   <div class="deco-dots"></div>
   <div class="page-wrapper">
 
-    <a href="index.html" class="back-btn">Back to Menu</a>
+    <a href="index.html" class="back-btn">חזרה לתפריט</a>
 
     <header class="page-header fade-in">
       <span class="emoji">📍</span>
-      <h1>Location &amp;<br/>Directions</h1>
-      <p>We can't wait to see you there!</p>
+      <h1>איך מגיעים?</h1>
+      <p>אנחנו לא יכולות לחכות לראות אותך!</p>
     </header>
 
     <!-- Address Card -->
@@ -24,26 +24,26 @@
       <div class="address-header">
         <span class="addr-icon">🏠</span>
         <div>
-          <p class="addr-label">Venue</p>
-          <h2 class="addr-venue">Villa Rosa Blanche</h2>
+          <p class="addr-label">המקום</p>
+          <h2 class="addr-venue">וילה רוזה בלאנש</h2>
         </div>
       </div>
       <div class="divider"></div>
       <address class="address-block">
-        <p>28 Rothschild Boulevard</p>
-        <p>Tel Aviv-Yafo, 6688314</p>
-        <p>Israel</p>
+        <p>שדרות רוטשילד 28</p>
+        <p>תל אביב-יפו, 6688314</p>
+        <p>ישראל</p>
       </address>
       <button class="btn btn-outline copy-addr-btn" id="copyAddr" style="margin-top:14px;width:auto;padding:10px 20px;font-size:0.85rem;">
-        📋 Copy Address
+        📋 העתקת כתובת
       </button>
-      <span id="copyConfirm" class="copy-confirm">Copied! ✓</span>
+      <span id="copyConfirm" class="copy-confirm">הועתק! ✓</span>
     </div>
 
     <!-- Google Map -->
     <div class="card map-card fade-in" style="animation-delay:0.2s">
-      <p class="map-label">📌 Find us on the map</p>
-      <!-- 
+      <p class="map-label">📌 מצאו אותנו במפה</p>
+      <!--
         INSTRUCTIONS: Replace the src URL below with your actual Google Maps embed URL.
         Go to maps.google.com → search your address → Share → Embed a map → Copy the src URL.
       -->
@@ -56,15 +56,15 @@
         allowfullscreen=""
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        title="Venue location map">
+        title="מפת המקום">
       </iframe>
     </div>
 
     <!-- Navigation Buttons -->
     <div class="card fade-in" style="animation-delay:0.3s">
-      <p class="nav-title">🚗 Open in navigation app</p>
+      <p class="nav-title">🚗 פתחו באפליקציית ניווט</p>
       <div class="nav-buttons">
-        <!-- 
+        <!--
           INSTRUCTIONS: Replace the lat/lon values with your venue's actual coordinates.
           Waze deep link format: https://waze.com/ul?ll=LAT,LON&navigate=yes
         -->
@@ -75,9 +75,9 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20.54 6.63C19.27 4.18 16.88 2.5 14.07 2.5c-1.39 0-2.69.39-3.8 1.06C9.16 2.9 7.88 2.5 6.5 2.5 3.47 2.5 1 5 1 8.03c0 1.58.65 3.01 1.68 4.04l7.5 9.93 7.5-9.93c.6-.63 1.05-1.4 1.31-2.25A6.03 6.03 0 0020.54 6.63z"/>
           </svg>
-          Open in Waze
+          פתחו ב-Waze
         </a>
-        <!-- 
+        <!--
           Google Maps deep link: https://maps.google.com/maps?q=LAT,LON
         -->
         <a href="https://maps.google.com/maps?q=32.0656,34.7748"
@@ -91,12 +91,12 @@
 
     <!-- Notes -->
     <div class="card note-card fade-in" style="animation-delay:0.4s">
-      <p class="note-title">💡 Good to know</p>
+      <p class="note-title">💡 כדאי לדעת</p>
       <ul class="note-list">
-        <li>🅿️ Parking available in the building garage</li>
-        <li>🚌 Bus lines 4, 18, and 89 stop nearby</li>
-        <li>🚕 Uber & Gett drop-off at main entrance</li>
-        <li>🔔 Buzz apartment 3B on arrival</li>
+        <li>🅿️ חניה זמינה בחניון הבניין</li>
+        <li>🚌 קווי אוטובוס 4, 18 ו-89 עוצרים בקרבת מקום</li>
+        <li>🚕 מוניות Uber ו-Gett מורידות בכניסה הראשית</li>
+        <li>🔔 צלצלו לדירה 3B בהגעה</li>
       </ul>
     </div>
 
@@ -105,7 +105,7 @@
   <script>
     // Copy address to clipboard
     document.getElementById('copyAddr').addEventListener('click', () => {
-      const address = '28 Rothschild Boulevard, Tel Aviv-Yafo, 6688314, Israel';
+      const address = 'שדרות רוטשילד 28, תל אביב-יפו, 6688314, ישראל';
       navigator.clipboard.writeText(address).then(() => {
         const confirm = document.getElementById('copyConfirm');
         confirm.classList.add('show');

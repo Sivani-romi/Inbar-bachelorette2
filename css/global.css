@@ -4,7 +4,7 @@
    Fonts: Playfair Display + DM Sans
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Heebo:wght@300;400;500;600;700&family=Assistant:wght@400;600;700&display=swap');
 
 /* ── CSS Variables ── */
 :root {
@@ -19,8 +19,8 @@
   --text-main:   #2D1B2E;
   --text-muted:  #8E6B7E;
 
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body:    'DM Sans', sans-serif;
+  --font-display: 'Assistant', 'Playfair Display', Georgia, serif;
+  --font-body:    'Heebo', 'DM Sans', sans-serif;
 
   --radius-sm:   8px;
   --radius-md:   16px;
@@ -44,6 +44,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  direction: rtl;
 }
 
 body {
@@ -53,6 +54,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  direction: rtl;
+  text-align: right;
 }
 
 /* ── Background noise texture (CSS only) ── */
@@ -99,9 +102,9 @@ body::before {
 .back-btn:hover {
   background: var(--blush);
   color: var(--deep);
-  transform: translateX(-2px);
+  transform: translateX(2px);
 }
-.back-btn::before { content: '←'; font-size: 1rem; }
+.back-btn::before { content: '→'; font-size: 1rem; }
 
 /* ── Page header ── */
 .page-header {
@@ -313,7 +316,7 @@ body::before {
 /* ── Confetti dots decoration ── */
 .deco-dots {
   position: fixed;
-  top: 0; right: 0;
+  top: 0; left: 0;
   width: 120px; height: 120px;
   pointer-events: none;
   z-index: 0;
@@ -323,7 +326,7 @@ body::before {
     radial-gradient(circle, var(--gold) 1px, transparent 1px);
   background-size: 18px 18px, 9px 9px;
   background-position: 0 0, 9px 9px;
-  border-radius: 0 0 0 80px;
+  border-radius: 0 0 80px 0;
 }
 
 /* ── Scrollbar ── */

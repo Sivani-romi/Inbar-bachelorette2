@@ -1,33 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🧠 Bride Quiz — Bachelorette</title>
+  <title>🧠 חידון כלה — מסיבת רווקות</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/quiz.css" />
 </head>
 <body>
   <div class="deco-dots"></div>
   <div class="page-wrapper">
-    <a href="index.html" class="back-btn">Back to Menu</a>
+    <a href="index.html" class="back-btn">חזרה לתפריט</a>
 
     <!-- ── Intro Screen ── -->
     <div id="introScreen">
       <header class="page-header fade-in">
         <span class="emoji">🧠</span>
-        <h1>How Well Do You Know the Bride?</h1>
-        <p>10 questions about Sofia. No cheating! 👀</p>
+        <h1>כמה טוב את מכירה את הכלה?</h1>
+        <p>10 שאלות על ענבר. בלי הצצות! 👀</p>
       </header>
       <div class="card intro-card fade-in" style="animation-delay:0.1s">
         <div class="intro-rules">
-          <div class="rule"><span>📋</span><p>10 multiple-choice questions</p></div>
-          <div class="rule"><span>⏱️</span><p>Answer at your own pace</p></div>
-          <div class="rule"><span>🏆</span><p>See your score at the end</p></div>
+          <div class="rule"><span>📋</span><p>10 שאלות אמריקאיות</p></div>
+          <div class="rule"><span>⏱️</span><p>לענות בקצב שלך</p></div>
+          <div class="rule"><span>🏆</span><p>לראות את הניקוד בסוף</p></div>
         </div>
       </div>
       <button class="btn btn-primary fade-in" id="startBtn" style="animation-delay:0.2s;margin:0 20px;width:calc(100% - 40px);">
-        Start Quiz 🎉
+        בואו נתחיל 🎉
+      </button>
+    </div>
+
+    <!-- ── Name Entry Screen ── -->
+    <div id="nameScreen" style="display:none;">
+      <header class="page-header fade-in">
+        <span class="emoji">✨</span>
+        <h1>קודם כל, איך קוראים לך?</h1>
+        <p>נשמח לדעת מי המנצחת! 💗</p>
+      </header>
+      <div class="card fade-in" style="animation-delay:0.1s">
+        <div class="form-group">
+          <label for="participantName">השם שלך</label>
+          <input
+            type="text"
+            id="participantName"
+            placeholder="לדוגמה: מאיה כהן"
+            autocomplete="name"
+            required
+          />
+        </div>
+        <div class="alert alert-error" id="nameError">
+          ❌ נא להזין את השם שלך כדי להמשיך
+        </div>
+      </div>
+      <button class="btn btn-primary fade-in" id="continueBtn" style="animation-delay:0.2s;margin:0 20px;width:calc(100% - 40px);">
+        קדימה לחידון →
       </button>
     </div>
 
@@ -37,16 +64,16 @@
         <div class="quiz-progress-fill" id="progressFill"></div>
       </div>
       <div class="quiz-meta">
-        <span id="questionCounter">Question 1 of 10</span>
-        <span id="scoreDisplay">Score: 0</span>
+        <span id="questionCounter">שאלה 1 מתוך 10</span>
+        <span id="scoreDisplay">ניקוד: 0</span>
       </div>
       <div class="card question-card fade-in">
-        <p class="question-number" id="questionNumber">Q1</p>
+        <p class="question-number" id="questionNumber">שאלה 1</p>
         <h2 class="question-text" id="questionText"></h2>
       </div>
       <div class="options-list" id="optionsList"></div>
       <button class="btn btn-primary" id="nextBtn" style="margin-top:4px;display:none;">
-        Next Question →
+        שאלה הבאה ←
       </button>
     </div>
 
@@ -54,92 +81,102 @@
     <div id="resultScreen" style="display:none;">
       <header class="page-header">
         <span class="emoji" id="resultEmoji">🎊</span>
-        <h1 id="resultTitle">Amazing!</h1>
-        <p id="resultSubtitle">You really know Sofia!</p>
+        <h1 id="resultTitle">מדהים!</h1>
+        <p id="resultSubtitle">את ממש מכירה את ענבר!</p>
       </header>
       <div class="card score-card">
         <div class="score-circle">
           <span class="score-num" id="finalScore">0</span>
           <span class="score-total" id="totalQuestions">/10</span>
         </div>
-        <p class="score-label" id="scoreLabel">Perfect score!</p>
+        <p class="score-label" id="scoreLabel">ניקוד מושלם!</p>
+      </div>
+      <div class="alert alert-success" id="saveSuccess" style="margin: 0 20px 16px;">
+        ✅ הניקוד שלך נשמר בהצלחה!
       </div>
       <div class="card answers-review" id="answersReview">
-        <h3>Review Your Answers</h3>
+        <h3>סקירת התשובות שלך</h3>
         <div id="reviewList"></div>
       </div>
       <button class="btn btn-outline" id="retryBtn" style="margin-top:4px;">
-        Try Again 🔄
+        ניסיון נוסף 🔄
       </button>
     </div>
 
   </div>
 
-  <script>
+  <script type="module">
     // ============================================================
-    //  ✏️ EDIT: Customize questions and answers about your bride!
-    //  correct: index (0-based) of the correct answer in options[]
+    //  ✏️ EDIT: התאימי את השאלות והתשובות לכלה!
+    //  correct: האינדקס (מתחיל מ-0) של התשובה הנכונה ב-options
     // ============================================================
+    import { db } from './js/firebase-config.js';
+    import {
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
     const questions = [
       {
-        text: "What is Sofia's hometown?",
-        options: ["Tel Aviv", "Jerusalem", "Haifa", "Beersheba"],
+        text: "מה עיר המגורים של ענבר?",
+        options: ["תל אביב", "ירושלים", "חיפה", "באר שבע"],
         correct: 0,
-        explanation: "Sofia grew up in Tel Aviv! ☀️"
+        explanation: "ענבר גדלה בתל אביב! ☀️"
       },
       {
-        text: "What did Sofia study at university?",
-        options: ["Law", "Computer Science", "Architecture", "Psychology"],
+        text: "מה ענבר למדה באוניברסיטה?",
+        options: ["משפטים", "מדעי המחשב", "אדריכלות", "פסיכולוגיה"],
         correct: 2,
-        explanation: "Architecture was her passion from day one! 🏛️"
+        explanation: "אדריכלות הייתה התשוקה שלה מהיום הראשון! 🏛️"
       },
       {
-        text: "What is Sofia's favourite travel destination?",
-        options: ["Japan", "Italy", "Greece", "Thailand"],
+        text: "מהו יעד הטיולים האהוב על ענבר?",
+        options: ["יפן", "איטליה", "יוון", "תאילנד"],
         correct: 1,
-        explanation: "Italy stole her heart — especially the pasta! 🍝"
+        explanation: "איטליה גנבה את ליבה — במיוחד הפסטה! 🍝"
       },
       {
-        text: "How did Sofia meet her fiancé?",
-        options: ["At work", "Through friends", "Dating app", "At the gym"],
+        text: "איך ענבר הכירה את החתן?",
+        options: ["בעבודה", "דרך חברים", "אפליקציית היכרויות", "בחדר כושר"],
         correct: 1,
-        explanation: "A mutual friend set them up — and the rest is history! 💘"
+        explanation: "חבר משותף חיבר ביניהם — וההמשך היסטוריה! 💘"
       },
       {
-        text: "What is Sofia's go-to karaoke song?",
+        text: "מהו שיר הקריוקי האהוב על ענבר?",
         options: ["Total Eclipse of the Heart", "Dancing Queen", "Don't Stop Believin'", "Shallow"],
         correct: 3,
-        explanation: "She never fails to bring the house down with Shallow! 🎤"
+        explanation: "היא תמיד מפוצצת את המקום עם Shallow! 🎤"
       },
       {
-        text: "What is Sofia's favourite season?",
-        options: ["Spring", "Summer", "Autumn", "Winter"],
+        text: "מהי העונה האהובה על ענבר?",
+        options: ["אביב", "קיץ", "סתיו", "חורף"],
         correct: 1,
-        explanation: "Beach girl through and through — she lives for summer! 🌊"
+        explanation: "ילדת ים אמיתית — היא חיה בשביל הקיץ! 🌊"
       },
       {
-        text: "What is Sofia's secret talent?",
-        options: ["Juggling", "Painting watercolors", "Playing the ukulele", "Speed-reading"],
+        text: "מהו הכישרון הסודי של ענבר?",
+        options: ["ז'נגלינג", "ציור באקוורל", "נגינה באוקולילי", "קריאה מהירה"],
         correct: 2,
-        explanation: "Yes, she secretly plays the ukulele — and she's actually good! 🎶"
+        explanation: "כן, היא מנגנת באוקולילי בסתר — והיא ממש טובה! 🎶"
       },
       {
-        text: "What is the first thing Sofia does every morning?",
-        options: ["Hit snooze 3 times", "Make coffee", "Check Instagram", "Go for a run"],
+        text: "מה הדבר הראשון שענבר עושה כל בוקר?",
+        options: ["לוחצת snooze 3 פעמים", "מכינה קפה", "בודקת אינסטגרם", "יוצאת לריצה"],
         correct: 0,
-        explanation: "She's famously NOT a morning person 😂 Snooze x3, minimum."
+        explanation: "היא מפורסמת בכך שהיא ממש לא בוקרית 😂 snooze x3, מינימום."
       },
       {
-        text: "What food could Sofia eat every single day?",
-        options: ["Sushi", "Pizza", "Hummus", "Pasta"],
+        text: "איזה אוכל ענבר יכולה לאכול כל יום?",
+        options: ["סושי", "פיצה", "חומוס", "פסטה"],
         correct: 2,
-        explanation: "Hummus. Always hummus. It's practically her love language. 🤤"
+        explanation: "חומוס. תמיד חומוס. זה כמעט שפת האהבה שלה. 🤤"
       },
       {
-        text: "Where is the honeymoon planned?",
-        options: ["Maldives", "Bali", "Santorini", "Paris"],
+        text: "איפה מתוכנן ירח הדבש?",
+        options: ["מלדיביים", "באלי", "סנטוריני", "פריז"],
         correct: 0,
-        explanation: "Maldives here they come! Overwater bungalow vibes! 🏝️"
+        explanation: "מלדיביים מגיעים! בקתות מעל המים! 🏝️"
       }
     ];
 
@@ -148,9 +185,11 @@
     let score    = 0;
     let answered = false;
     let userAnswers = [];
+    let participantName = '';
 
     // ── DOM refs ──
     const introScreen  = document.getElementById('introScreen');
+    const nameScreen   = document.getElementById('nameScreen');
     const quizScreen   = document.getElementById('quizScreen');
     const resultScreen = document.getElementById('resultScreen');
     const progressFill = document.getElementById('progressFill');
@@ -160,12 +199,37 @@
     const qText        = document.getElementById('questionText');
     const optionsList  = document.getElementById('optionsList');
     const nextBtn      = document.getElementById('nextBtn');
+    const nameInput    = document.getElementById('participantName');
+    const nameError    = document.getElementById('nameError');
+    const saveSuccess  = document.getElementById('saveSuccess');
 
-    // ── Start ──
+    // ── Start: show name entry screen ──
     document.getElementById('startBtn').addEventListener('click', () => {
       introScreen.style.display = 'none';
-      quizScreen.style.display  = 'block';
+      nameScreen.style.display  = 'block';
+      nameInput.focus();
+    });
+
+    // ── Continue: validate name and start quiz ──
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      if (!name) {
+        nameError.classList.add('show');
+        nameInput.focus();
+        return;
+      }
+      nameError.classList.remove('show');
+      participantName = name;
+      nameScreen.style.display = 'none';
+      quizScreen.style.display = 'block';
       renderQuestion();
+    });
+
+    // Also allow pressing Enter in the name field
+    nameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('continueBtn').click();
+      }
     });
 
     function renderQuestion() {
@@ -176,9 +240,9 @@
       const q = questions[currentQ];
       const pct = ((currentQ) / questions.length) * 100;
       progressFill.style.width = pct + '%';
-      qCounter.textContent  = `Question ${currentQ + 1} of ${questions.length}`;
-      scoreDisplay.textContent = `Score: ${score}`;
-      qNumber.textContent   = `Q${currentQ + 1}`;
+      qCounter.textContent  = `שאלה ${currentQ + 1} מתוך ${questions.length}`;
+      scoreDisplay.textContent = `ניקוד: ${score}`;
+      qNumber.textContent   = `שאלה ${currentQ + 1}`;
       qText.textContent     = q.text;
 
       q.options.forEach((opt, i) => {
@@ -219,9 +283,9 @@
       exp.textContent = (isCorrect ? '✅ ' : '❌ ') + q.explanation;
       optionsList.appendChild(exp);
 
-      scoreDisplay.textContent = `Score: ${score}`;
+      scoreDisplay.textContent = `ניקוד: ${score}`;
       nextBtn.style.display = 'flex';
-      nextBtn.textContent = currentQ < questions.length - 1 ? 'Next Question →' : 'See Results 🎊';
+      nextBtn.textContent = currentQ < questions.length - 1 ? 'שאלה הבאה ←' : 'תוצאות 🎊';
     }
 
     nextBtn.addEventListener('click', () => {
@@ -233,25 +297,40 @@
       }
     });
 
-    function showResults() {
+    async function showResults() {
       quizScreen.style.display  = 'none';
       resultScreen.style.display = 'block';
       progressFill.style.width = '100%';
 
       const pct = score / questions.length;
       let emoji, title, subtitle;
-      if (pct === 1)       { emoji = '👑'; title = 'PERFECT!';    subtitle = "You're basically Sofia's twin! 👯‍♀️"; }
-      else if (pct >= 0.8) { emoji = '🏆'; title = 'Amazing!';    subtitle = "You really know our bride-to-be! 💗"; }
-      else if (pct >= 0.6) { emoji = '🥳'; title = 'Great job!';  subtitle = "Solid! You know her pretty well. 💪"; }
-      else if (pct >= 0.4) { emoji = '😅'; title = 'Not bad!';    subtitle = "Room to grow! More brunch dates needed. ☕"; }
-      else                  { emoji = '😂'; title = 'Oops!';       subtitle = "Do you actually know Sofia? 😂 (Still love you!)"; }
+      if (pct === 1)       { emoji = '👑'; title = 'מושלם!';    subtitle = "את בעצם התאומה של ענבר! 👯‍♀️"; }
+      else if (pct >= 0.8) { emoji = '🏆'; title = 'מדהים!';    subtitle = "את ממש מכירה את הכלה שלנו! 💗"; }
+      else if (pct >= 0.6) { emoji = '🥳'; title = 'כל הכבוד!';  subtitle = "סולידי! את מכירה אותה די טוב. 💪"; }
+      else if (pct >= 0.4) { emoji = '😅'; title = 'לא רע!';    subtitle = "יש לאן לשאוף! צריך עוד פגישות ברנץ'. ☕"; }
+      else                  { emoji = '😂'; title = 'אופס!';       subtitle = "את באמת מכירה את ענבר? 😂 (עדיין אוהבות אותך!)"; }
 
       document.getElementById('resultEmoji').textContent      = emoji;
       document.getElementById('resultTitle').textContent      = title;
       document.getElementById('resultSubtitle').textContent   = subtitle;
       document.getElementById('finalScore').textContent       = score;
       document.getElementById('totalQuestions').textContent   = `/${questions.length}`;
-      document.getElementById('scoreLabel').textContent       = `${Math.round(pct * 100)}% correct`;
+      document.getElementById('scoreLabel').textContent       = `${Math.round(pct * 100)}% נכון`;
+
+      // Save score to Firebase
+      try {
+        await addDoc(collection(db, 'quiz_scores'), {
+          participantName: participantName,
+          score: score,
+          totalQuestions: questions.length,
+          percentage: Math.round(pct * 100),
+          answers: userAnswers,
+          submittedAt: serverTimestamp()
+        });
+        saveSuccess.classList.add('show');
+      } catch (err) {
+        console.error('Error saving score:', err);
+      }
 
       // Review
       const reviewList = document.getElementById('reviewList');
@@ -259,9 +338,9 @@
         const div = document.createElement('div');
         div.className = 'review-item ' + (a.isCorrect ? 'review-correct' : 'review-wrong');
         div.innerHTML = `
-          <p class="review-q"><strong>Q${i+1}:</strong> ${a.question}</p>
-          <p class="review-chosen">${a.isCorrect ? '✅' : '❌'} You: ${a.chosen}</p>
-          ${!a.isCorrect ? `<p class="review-answer">✔ Correct: ${a.correct}</p>` : ''}
+          <p class="review-q"><strong>שאלה ${i+1}:</strong> ${a.question}</p>
+          <p class="review-chosen">${a.isCorrect ? '✅' : '❌'} את: ${a.chosen}</p>
+          ${!a.isCorrect ? `<p class="review-answer">✔ נכון: ${a.correct}</p>` : ''}
         `;
         reviewList.appendChild(div);
       });
@@ -274,6 +353,7 @@
       userAnswers = [];
       progressFill.style.width = '0%';
       document.getElementById('reviewList').innerHTML = '';
+      saveSuccess.classList.remove('show');
       resultScreen.style.display = 'none';
       quizScreen.style.display   = 'block';
       renderQuestion();

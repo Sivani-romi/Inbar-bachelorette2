@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💌 RSVP — Bachelorette</title>
+  <title>💌 אישור הגעה — מסיבת רווקות</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/rsvp.css" />
 </head>
@@ -11,12 +11,12 @@
   <div class="deco-dots"></div>
   <div class="page-wrapper">
 
-    <a href="index.html" class="back-btn">Back to Menu</a>
+    <a href="index.html" class="back-btn">חזרה לתפריט</a>
 
     <header class="page-header fade-in">
       <span class="emoji">💌</span>
-      <h1>RSVP</h1>
-      <p>Let us know if you're joining the fun!</p>
+      <h1>אישור הגעה</h1>
+      <p>נשמח לדעת אם את מצטרפת אלינו!</p>
     </header>
 
     <div class="card fade-in" style="animation-delay:0.1s">
@@ -24,12 +24,12 @@
 
         <!-- Full Name -->
         <div class="form-group">
-          <label for="fullName">Full Name *</label>
+          <label for="fullName">שם מלא *</label>
           <input
             type="text"
             id="fullName"
             name="fullName"
-            placeholder="e.g. Maya Cohen"
+            placeholder="לדוגמה: מאיה כהן"
             required
             autocomplete="name"
           />
@@ -37,48 +37,48 @@
 
         <!-- Attending -->
         <div class="form-group">
-          <label>Are you attending? *</label>
+          <label>האם תגיעי? *</label>
           <div class="radio-group">
             <div class="radio-option">
               <input type="radio" name="attending" id="attendYes" value="yes" required />
-              <label for="attendYes">🥂 Yes, I'll be there!</label>
+              <label for="attendYes">🥂 כן, אני מגיעה!</label>
             </div>
             <div class="radio-option">
               <input type="radio" name="attending" id="attendNo" value="no" />
-              <label for="attendNo">😢 Sorry, I can't make it</label>
+              <label for="attendNo">😢 מצטערת, לא אוכל להגיע</label>
             </div>
           </div>
         </div>
 
         <!-- Dietary -->
         <div class="form-group" id="dietarySection">
-          <label for="dietary">Food Allergies / Dietary Preferences</label>
+          <label for="dietary">אלרגיות / העדפות תזונתיות</label>
           <textarea
             id="dietary"
             name="dietary"
-            placeholder="e.g. Vegetarian, gluten-free, nut allergy..."
+            placeholder="לדוגמה: צמחונית, ללא גלוטן, אלרגיה לאגוזים..."
           ></textarea>
         </div>
 
         <!-- Submit -->
         <button type="submit" class="btn btn-primary" id="submitBtn">
-          <span id="btnText">Send RSVP 💗</span>
+          <span id="btnText">שליחת אישור הגעה 💗</span>
           <span id="btnSpinner" class="spinner" style="display:none;"></span>
         </button>
 
       </form>
 
       <div class="alert alert-success" id="successAlert">
-        🎉 Thanks! Your RSVP has been received. Can't wait to celebrate with you!
+        🎉 תודה! אישור ההגעה שלך התקבל. לא יכולות לחכות לחגוג איתך!
       </div>
       <div class="alert alert-error" id="errorAlert">
-        ❌ Oops! Something went wrong. Please try again or contact the organizer.
+        ❌ אופס! משהו השתבש. נסי שוב או צרי קשר עם המארגנת.
       </div>
     </div>
 
     <!-- Already submitted? -->
     <p class="rsvp-footnote fade-in" style="animation-delay:0.25s">
-      Already submitted? Reach out to the organizer to make any changes. 💬
+      כבר אישרת הגעה? צרי קשר עם המארגנת לכל שינוי. 💬
     </p>
 
   </div>
@@ -108,11 +108,11 @@
 
       // Validation
       if (!fullName) {
-        alert('Please enter your full name.');
+        alert('נא להזין שם מלא.');
         return;
       }
       if (!attending) {
-        alert('Please select whether you are attending.');
+        alert('נא לבחור האם את מגיעה.');
         return;
       }
 
