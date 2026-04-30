@@ -1,0 +1,332 @@
+/* ============================================
+   GLOBAL STYLES — Bachelorette Party App
+   Aesthetic: Soft maximalism · Champagne & Rose
+   Fonts: Playfair Display + DM Sans
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --blush:       #F2B8C6;
+  --rose:        #D4688A;
+  --champagne:   #F7E7CE;
+  --gold:        #C9A84C;
+  --deep:        #2D1B2E;
+  --cream:       #FDF6EE;
+  --white:       #FFFFFF;
+  --soft-gray:   #F5EEF5;
+  --text-main:   #2D1B2E;
+  --text-muted:  #8E6B7E;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   28px;
+  --radius-full: 999px;
+
+  --shadow-soft: 0 4px 24px rgba(45,27,46,0.10);
+  --shadow-card: 0 8px 32px rgba(45,27,46,0.13);
+
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background noise texture (CSS only) ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(242,184,198,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(201,168,76,0.12) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Page wrapper ── */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+  min-height: 100vh;
+}
+
+/* ── Back button ── */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 20px 0 16px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(212,104,138,0.25);
+  border-radius: var(--radius-full);
+  color: var(--rose);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.back-btn:hover {
+  background: var(--blush);
+  color: var(--deep);
+  transform: translateX(-2px);
+}
+.back-btn::before { content: '←'; font-size: 1rem; }
+
+/* ── Page header ── */
+.page-header {
+  text-align: center;
+  padding: 16px 0 28px;
+}
+.page-header .emoji {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 8px;
+  animation: float 3s ease-in-out infinite;
+}
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--deep);
+  line-height: 1.2;
+}
+.page-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+/* ── Cards ── */
+.card {
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(242,184,198,0.35);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--rose), #B5547A);
+  color: var(--white);
+  box-shadow: 0 4px 16px rgba(212,104,138,0.4);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212,104,138,0.5);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--champagne), #EDD9B5);
+  color: var(--deep);
+  box-shadow: 0 4px 16px rgba(201,168,76,0.25);
+  border: 1px solid rgba(201,168,76,0.3);
+}
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--rose);
+  border: 2px solid var(--blush);
+}
+.btn-outline:hover {
+  background: var(--blush);
+  color: var(--deep);
+}
+
+/* ── Form elements ── */
+.form-group {
+  margin-bottom: 18px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 7px;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid rgba(212,104,138,0.25);
+  border-radius: var(--radius-md);
+  background: rgba(253,246,238,0.7);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  transition: var(--transition);
+  outline: none;
+  resize: vertical;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--rose);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(212,104,138,0.12);
+}
+.form-group textarea { min-height: 100px; }
+
+/* ── Radio group ── */
+.radio-group {
+  display: flex;
+  gap: 12px;
+}
+.radio-option {
+  flex: 1;
+  position: relative;
+}
+.radio-option input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+}
+.radio-option label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border: 1.5px solid rgba(212,104,138,0.25);
+  border-radius: var(--radius-md);
+  background: rgba(253,246,238,0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.radio-option input:checked + label {
+  border-color: var(--rose);
+  background: linear-gradient(135deg, rgba(242,184,198,0.35), rgba(212,104,138,0.15));
+  color: var(--rose);
+  font-weight: 600;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,104,138,0.3), transparent);
+  margin: 20px 0;
+}
+
+/* ── Animations ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+/* ── Success / Error states ── */
+.alert {
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 14px;
+  display: none;
+}
+.alert-success {
+  background: linear-gradient(135deg, rgba(134,195,150,0.2), rgba(78,175,100,0.15));
+  border: 1.5px solid rgba(78,175,100,0.35);
+  color: #2D6B3A;
+}
+.alert-error {
+  background: linear-gradient(135deg, rgba(242,184,198,0.3), rgba(212,104,138,0.15));
+  border: 1.5px solid rgba(212,104,138,0.35);
+  color: #8B2040;
+}
+.alert.show { display: block; animation: fadeInUp 0.3s ease; }
+
+/* ── Confetti dots decoration ── */
+.deco-dots {
+  position: fixed;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+  background-image:
+    radial-gradient(circle, var(--rose) 1.5px, transparent 1.5px),
+    radial-gradient(circle, var(--gold) 1px, transparent 1px);
+  background-size: 18px 18px, 9px 9px;
+  background-position: 0 0, 9px 9px;
+  border-radius: 0 0 0 80px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--blush); border-radius: 2px; }

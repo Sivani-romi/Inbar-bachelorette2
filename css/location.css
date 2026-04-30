@@ -1,0 +1,127 @@
+/* location.css */
+
+.address-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.addr-icon { font-size: 2rem; }
+.addr-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.addr-venue {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--deep);
+}
+
+address {
+  font-style: normal;
+  line-height: 1.8;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.copy-confirm {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #2D6B3A;
+  font-weight: 600;
+  margin-left: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.copy-confirm.show { opacity: 1; }
+
+.map-card { padding: 18px; }
+.map-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.map-iframe {
+  border-radius: var(--radius-md);
+  display: block;
+  width: 100%;
+}
+
+.nav-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+  color: var(--deep);
+}
+.nav-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-waze {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #00D4C8, #00B5B0);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(0,212,200,0.35);
+}
+.btn-waze:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,212,200,0.45);
+}
+.btn-gmaps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #4285F4, #34A853);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(66,133,244,0.35);
+}
+.btn-gmaps:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(66,133,244,0.45);
+}
+
+.note-card { background: linear-gradient(135deg, rgba(247,231,206,0.6), rgba(253,246,238,0.8)); }
+.note-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--deep);
+  margin-bottom: 12px;
+}
+.note-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.note-list li {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

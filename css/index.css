@@ -1,0 +1,186 @@
+/* ============================================
+   index.css — Home Screen
+   ============================================ */
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 48px 24px 32px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.sparkle-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.sparkle-row span {
+  color: var(--gold);
+  font-size: 0.75rem;
+  animation: float 2.5s ease-in-out infinite;
+}
+.sparkle-row span:nth-child(2) { animation-delay: 0.4s; }
+.sparkle-row span:nth-child(3) { animation-delay: 0.8s; }
+
+.hero-pre {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--deep);
+  margin-bottom: 14px;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--rose);
+  display: block;
+}
+
+.hero-date {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  background: linear-gradient(135deg, rgba(242,184,198,0.5), rgba(247,231,206,0.6));
+  border: 1.5px solid rgba(212,104,138,0.25);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--rose);
+  letter-spacing: 0.03em;
+  backdrop-filter: blur(8px);
+}
+
+/* ── Grid Menu ── */
+.grid-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 0 20px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.grid-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px 18px 18px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--deep);
+  overflow: hidden;
+  min-height: 130px;
+  cursor: pointer;
+  animation: fadeInUp 0.5s ease both;
+  animation-delay: var(--delay, 0s);
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.22s ease;
+}
+
+/* Alternating card backgrounds */
+.grid-item:nth-child(1) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(242,184,198,0.28));
+  border: 1.5px solid rgba(242,184,198,0.5);
+  box-shadow: var(--shadow-card);
+}
+.grid-item:nth-child(2) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(247,231,206,0.35));
+  border: 1.5px solid rgba(201,168,76,0.3);
+  box-shadow: var(--shadow-card);
+}
+.grid-item:nth-child(3) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(212,104,138,0.15));
+  border: 1.5px solid rgba(212,104,138,0.3);
+  box-shadow: var(--shadow-card);
+}
+.grid-item:nth-child(4) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(242,184,198,0.22));
+  border: 1.5px solid rgba(242,184,198,0.4);
+  box-shadow: var(--shadow-card);
+}
+.grid-item:nth-child(5) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(201,168,76,0.18));
+  border: 1.5px solid rgba(201,168,76,0.25);
+  box-shadow: var(--shadow-card);
+}
+.grid-item:nth-child(6) {
+  background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(212,104,138,0.2));
+  border: 1.5px solid rgba(212,104,138,0.35);
+  box-shadow: var(--shadow-card);
+}
+
+.grid-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(45,27,46,0.18);
+}
+.grid-item:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.grid-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.grid-item:hover .grid-icon {
+  transform: scale(1.2) rotate(-5deg);
+}
+
+.grid-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--deep);
+  flex: 1;
+}
+
+.grid-arrow {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  font-size: 0.9rem;
+  color: var(--rose);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: var(--transition);
+}
+.grid-item:hover .grid-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Footer ── */
+.home-footer {
+  text-align: center;
+  padding: 28px 20px 20px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
